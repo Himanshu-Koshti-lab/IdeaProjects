@@ -52,6 +52,11 @@ app.get('/{*splat}', (req, res) => {
   res.sendFile(path.join(distDir, 'index.html'))
 })
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`)
 })
+
+// Exit promptly on `docker stop` (Node ignores SIGTERM by default when running as PID 1).
+for (const signal of ['SIGTERM', 'SIGINT']) {
+  process.on(signal, () => server.close(() => process.exit(0)))
+}

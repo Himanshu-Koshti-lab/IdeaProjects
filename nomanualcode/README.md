@@ -17,6 +17,8 @@ A Spring Boot REST API for creating, reading, updating and deleting `Person` rec
 
 The server starts on <http://localhost:8080>.
 
+> **VS Code:** the Java extension defaults to its bundled JRE, which may be older than Java 26. That causes `UnsupportedClassVersionError ... class file version 70.0`. The workspace [.vscode/settings.json](../.vscode/settings.json) registers a JDK 26 through `java.configuration.runtimes`. Adjust the path if your JDK lives elsewhere.
+
 Other useful tasks:
 
 ```sh

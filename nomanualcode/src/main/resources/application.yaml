@@ -8,7 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
   sql:
     init:
       mode: always
@@ -18,3 +18,28 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+app:
+  logging:
+    slow-threshold-ms: 500
+
+logging:
+  pattern:
+    # timestamp  level  pid  [thread]  [requestId]  logger : message
+    console: "%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}){faint} %clr(%5p) %clr(${PID:- }){magenta} --- [%15.15t] [%clr(%-8X{requestId:-system}){yellow}] %clr(%-40.40logger{39}){cyan} : %m%n%wEx"
+  level:
+    root: INFO
+    com.example.nomanualcode: INFO
+    # DEBUG logs every repository call with its timing; set to INFO to hide them.
+    com.example.nomanualcode.person.PersonRepository: DEBUG
+
+---
+# JSON logs (Elastic Common Schema) for log aggregators: --spring.profiles.active=json
+spring:
+  config:
+    activate:
+      on-profile: json
+logging:
+  structured:
+    format:
+      console: ecs

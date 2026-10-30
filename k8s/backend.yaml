@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nomanualcode-backend
+  labels:
+    app: nomanualcode-backend
+spec:
+  # Keep at 1: the database is in-memory H2, so each replica would have its own separate data.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nomanualcode-backend
+  template:
+    metadata:
+      labels:
+        app: nomanualcode-backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: backend
+          image: nomanualcode-backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: json
+          resources:
+            requests:
+              cpu: 250m
+              memory: 384Mi
+            limits:
+              memory: 768Mi
+          # No actuator yet, so probe the port. Switch to httpGet /actuator/health once it exists.
+          startupProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 3
+            failureThreshold: 40
+          readinessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nomanualcode-backend
+  labels:
+    app: nomanualcode-backend
+spec:
+  # Internal only; the frontend proxies to it at http://nomanualcode-backend:8080.
+  type: ClusterIP
+  selector:
+    app: nomanualcode-backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

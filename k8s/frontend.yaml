@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nomanualcode-frontend
+  labels:
+    app: nomanualcode-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nomanualcode-frontend
+  template:
+    metadata:
+      labels:
+        app: nomanualcode-frontend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: frontend
+          image: nomanualcode-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: API_URL
+              value: http://nomanualcode-backend:8080
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nomanualcode-frontend
+  labels:
+    app: nomanualcode-frontend
+spec:
+  # Public entry point. Use ClusterIP + an Ingress instead if your cluster has one.
+  type: LoadBalancer
+  selector:
+    app: nomanualcode-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

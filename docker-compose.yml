@@ -1,0 +1,18 @@
+# Runs both images together locally. In production each image can be deployed on its own;
+# just point the frontend's API_URL at wherever the backend is reachable.
+services:
+  backend:
+    build: ./nomanualcode
+    image: nomanualcode-backend
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./nomanualcodeui
+    image: nomanualcode-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: http://backend:8080
+    depends_on:
+      - backend

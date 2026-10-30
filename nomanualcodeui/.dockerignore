@@ -1,0 +1,9 @@
+node_modules
+dist
+.idea
+*.iml
+.vscode
+Dockerfile
+.dockerignore
+*.md
+*.log
