@@ -62,3 +62,8 @@ dist-ssr
 
 ### Build artifacts (build-images.sh) ###
 artifacts/
+
+### k8sSetup ###
+k8sSetup/logs/
+k8sSetup/join-command.sh
+k8sSetup/.kubeconfig-*

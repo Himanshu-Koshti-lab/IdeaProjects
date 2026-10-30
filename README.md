@@ -75,6 +75,8 @@ To run both together locally: `docker compose up --build`, then open <http://loc
 
 With `--save`, upload the `.tar.gz` files and load them on the target (`gunzip -c <file>.tar.gz | docker load`). Then start the pods with `kubectl apply -f artifacts/k8s/`. The backend Service is internal (`ClusterIP`), and the frontend Service is a `LoadBalancer` on port 80 that proxies to it. Keep the backend at 1 replica while it uses in-memory H2.
 
+To run these pods on your own Kubernetes cluster instead of Docker Desktop's, see [k8sSetup/](k8sSetup/README.md). It has scripts that build a kubeadm cluster on Linux machines and deploy the app to it.
+
 Both images run as a non-root user. The backend uses an in-memory H2 database, so data resets whenever its container restarts.
 
 ## Prerequisites
